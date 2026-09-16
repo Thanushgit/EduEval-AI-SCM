@@ -1,0 +1,6 @@
+{
+  "name": "EduEval AI",
+  "description": "AI-powered evaluation of handwritten answers with concept-based marking, personalised feedback, and targeted practice.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
