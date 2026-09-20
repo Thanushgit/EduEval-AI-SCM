@@ -32,6 +32,7 @@ async function startServer() {
     res.json({
       status: "ok",
       hasGeminiKey: Boolean(process.env.GEMINI_API_KEY),
+      timestamp: new Date().toISOString(),
     });
   });
 
