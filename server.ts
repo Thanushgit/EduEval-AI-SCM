@@ -569,7 +569,26 @@ JSON schema:
     }
   });
 
-  // Get evaluations for a specific teacher
+  // Check MySQL database connection
+app.get("/api/db-health", async (_req, res) => {
+  try {
+    await pool.query("SELECT 1");
+    return res.json({
+      success: true,
+      database: "MySQL",
+      status: "connected"
+    });
+  } catch (error) {
+    console.error("Database health check failed:", error);
+    return res.status(500).json({
+      success: false,
+      database: "MySQL",
+      status: "disconnected"
+    });
+  }
+});
+
+// Get evaluations for a specific teacher
   app.get("/api/evaluations", async (req, res) => {
     try {
       const teacherId = Number(req.query.teacherId);
