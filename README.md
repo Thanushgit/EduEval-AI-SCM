@@ -184,3 +184,7 @@ MySQL is used to store users and evaluation records. The users table manages tea
 ## Authentication
 
 The backend provides signup and login REST APIs. Passwords are stored using bcrypt hashing, and users have teacher or student roles.
+
+## Backend Architecture
+
+The Express backend handles authentication, AI evaluation requests, MySQL database operations, and REST API responses. Gemini is used for answer evaluation and MySQL is used for persistent storage.
