@@ -153,3 +153,12 @@ The project uses two main tables:
 - evaluations - stores answer evaluation results
 
 The MySQL connection is configured in db.ts.
+
+## Development Workflow
+
+1. Create or update a feature.
+2. Test the changes locally.
+3. Check the Git status.
+4. Stage the required files.
+5. Create a meaningful commit.
+6. Push the changes to GitHub.
