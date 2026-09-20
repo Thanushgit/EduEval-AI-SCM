@@ -579,7 +579,7 @@ app.get("/api/db-health", async (_req, res) => {
       status: "connected"
     });
   } catch (error) {
-    console.error("Database health check failed:", error);
+    console.error("Database health check failed:", error instanceof Error ? error.message : error);
     return res.status(500).json({
       success: false,
       database: "MySQL",
