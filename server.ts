@@ -810,6 +810,14 @@ app.get("/api/evaluations/:id", async (req, res) => {
     }
   });
 
+  // API 404 handler
+  app.use("/api", (_req, res) => {
+    res.status(404).json({
+      success: false,
+      error: "API endpoint not found"
+    });
+  });
+
   // Vite middleware setup
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
