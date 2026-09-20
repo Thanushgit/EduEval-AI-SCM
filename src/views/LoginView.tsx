@@ -4,15 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 
 interface LoginViewProps {
-  onLoginSuccess: (name: string, role: "teacher" | "student") => void;
+  onLoginSuccess: (
+    id: number,
+    name: string,
+    role: "teacher" | "student"
+  ) => void;
 }
 
-interface StoredUser {
-  name: string;
-  email: string;
-  password: string;
-  role: "teacher" | "student";
-}
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -43,10 +41,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      const users: StoredUser[] = JSON.parse(
-        localStorage.getItem("edueval_users") || "[]"
-      );
-
       const cleanEmail = email.trim().toLowerCase();
 
       if (mode === "signup") {
@@ -55,48 +49,58 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
           cleanEmail.split("@")[0] ||
           "Student";
 
-        const existingUser = users.find(
-          (user) => user.email === cleanEmail
-        );
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: cleanName,
+            email: cleanEmail,
+            password,
+            role,
+          }),
+        });
 
-        if (existingUser) {
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
           showToast(
-            "An account with this email already exists.",
+            data.message || "Unable to create account.",
             "error"
           );
           return;
         }
 
-        const newUser: StoredUser = {
-          name: cleanName,
-          email: cleanEmail,
-          password,
-          role,
-        };
-
-        localStorage.setItem(
-          "edueval_users",
-          JSON.stringify([...users, newUser])
-        );
-
         showToast("Account created successfully!", "success");
 
         setTimeout(() => {
-          onLoginSuccess(cleanName, role);
+          onLoginSuccess(
+            data.user.id,
+            data.user.name,
+            data.user.role
+          );
         }, 500);
 
         return;
       }
 
-      const existingUser = users.find(
-        (user) =>
-          user.email === cleanEmail &&
-          user.password === password
-      );
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: cleanEmail,
+          password,
+        }),
+      });
 
-      if (!existingUser) {
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
         showToast(
-          "Invalid email or password.",
+          data.message || "Invalid email or password.",
           "error"
         );
         return;
@@ -106,15 +110,17 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
 
       setTimeout(() => {
         onLoginSuccess(
-          existingUser.name,
-          existingUser.role
+          data.user.id,
+          data.user.name,
+          data.user.role
         );
       }, 500);
+
     } catch (error) {
       console.error("Authentication error:", error);
 
       showToast(
-        "Something went wrong. Please try again.",
+        "Unable to connect to the server. Please try again.",
         "error"
       );
     } finally {

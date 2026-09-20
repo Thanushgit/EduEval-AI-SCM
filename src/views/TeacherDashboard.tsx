@@ -8,6 +8,7 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Cart
 interface TeacherDashboardProps {
   onLogout: () => void;
   userName?: string;
+  userId?: number | null;
 }
 
 // Mock Data for Charts
@@ -37,7 +38,7 @@ const gradeDistribution = [
 ];
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444'];
 
-export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ onLogout, userName = "Teacher" }) => {
+export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ onLogout, userName = "Teacher", userId }) => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
 
@@ -126,7 +127,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ onLogout, us
         </div>
       )}
 
-      {activeTab === "create" && <CreateEvaluationView />}
+      {activeTab === "create" && <CreateEvaluationView teacherId={userId} />}
 
       {activeTab === "analytics" && (
         <div className="space-y-6 animate-fade-in pb-10">

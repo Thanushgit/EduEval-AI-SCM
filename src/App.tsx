@@ -15,21 +15,25 @@ export default function App() {
 
   const [userName, setUserName] = useState("Student");
   const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   const handleSplashComplete = () => {
     setAppState("landing");
   };
 
   const handleLoginSuccess = (
+    id: number,
     name: string,
     role: UserRole
   ) => {
+    setUserId(id);
     setUserName(name);
     setUserRole(role);
     setAppState(role);
   };
 
   const handleLogout = () => {
+    setUserId(null);
     setUserName("Student");
     setUserRole(null);
     setAppState("landing");
@@ -62,6 +66,7 @@ export default function App() {
         <TeacherDashboard
           onLogout={handleLogout}
           userName={userName}
+          userId={userId}
         />
       )}
 

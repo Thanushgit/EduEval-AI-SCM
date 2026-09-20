@@ -3,6 +3,8 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
+import pool from "./db";
 
 dotenv.config();
 
@@ -33,6 +35,130 @@ async function startServer() {
     });
   });
 
+  // Authentication - Signup
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { name, email, password, role } = req.body;
+
+      if (!name || !email || !password || !role) {
+        return res.status(400).json({
+          success: false,
+          message: "Name, email, password and role are required",
+        });
+      }
+
+      if (!["teacher", "student"].includes(role)) {
+        return res.status(400).json({
+          success: false,
+          message: "Role must be teacher or student",
+        });
+      }
+
+      const normalizedEmail = String(email).trim().toLowerCase();
+
+      const [existingUsers] = await pool.execute(
+        "SELECT id FROM users WHERE email = ?",
+        [normalizedEmail]
+      );
+
+      if ((existingUsers as any[]).length > 0) {
+        return res.status(409).json({
+          success: false,
+          message: "An account with this email already exists",
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(String(password), 10);
+
+      const [result] = await pool.execute(
+        "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+        [String(name).trim(), normalizedEmail, hashedPassword, role]
+      );
+
+      const insertResult = result as any;
+
+      return res.status(201).json({
+        success: true,
+        message: "Account created successfully",
+        user: {
+          id: insertResult.insertId,
+          name: String(name).trim(),
+          email: normalizedEmail,
+          role,
+        },
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Unable to create account",
+      });
+    }
+  });
+
+  // Authentication - Login
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "Email and password are required",
+        });
+      }
+
+      const normalizedEmail = String(email).trim().toLowerCase();
+
+      const [rows] = await pool.execute(
+        "SELECT id, name, email, password, role FROM users WHERE email = ?",
+        [normalizedEmail]
+      );
+
+      const users = rows as any[];
+
+      if (users.length === 0) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid email or password",
+        });
+      }
+
+      const user = users[0];
+
+      const passwordMatches = await bcrypt.compare(
+        String(password),
+        user.password
+      );
+
+      if (!passwordMatches) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid email or password",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Login successful",
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Unable to login",
+      });
+    }
+  });
+
   // REAL handwritten-answer evaluation endpoint.
   // The frontend sends the image as multipart/form-data.
   app.post("/api/evaluate", async (req, res) => {
@@ -46,6 +172,7 @@ async function startServer() {
       let questionPrompt = "";
       let rubric = "";
       let maxMarks = 5;
+      let teacherId: number | null = null;
       let imageData = "";
       let imageMime = "image/jpeg";
 
@@ -89,12 +216,14 @@ async function startServer() {
             if (name === "questionPrompt") questionPrompt = text;
             if (name === "rubric") rubric = text;
             if (name === "maxMarks") maxMarks = Number(text) || 5;
+            if (name === "teacherId") teacherId = Number(text) || null;
           }
         }
       } else {
         questionPrompt = String(req.body?.questionPrompt || "");
         rubric = String(req.body?.rubric || "");
         maxMarks = Number(req.body?.maxMarks) || 5;
+        teacherId = Number(req.body?.teacherId) || null;
         const dataUrl = String(req.body?.handwrittenImage || "");
         if (dataUrl.startsWith("data:image/")) {
           const comma = dataUrl.indexOf(",");
@@ -388,10 +517,115 @@ JSON schema:
         firstQuestion.maxMarks = safeMax;
       }
 
+      // Save the completed evaluation to MySQL when a logged-in teacher ID is available.
+      if (teacherId) {
+        try {
+          await pool.execute(
+            `INSERT INTO evaluations
+              (
+                teacher_id,
+                question,
+                rubric,
+                max_marks,
+                score,
+                percentage,
+                confidence,
+                summary_feedback,
+                strengths,
+                weaknesses,
+                student_answer
+              )
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              teacherId,
+              questionPrompt,
+              rubric || null,
+              safeMax,
+              evaluation.overallScore,
+              evaluation.percentage,
+              evaluation.confidenceScore,
+              evaluation.summaryFeedback || evaluation.feedback || null,
+              Array.isArray(evaluation.strengths)
+                ? evaluation.strengths.join("\\n")
+                : evaluation.strengths || null,
+              Array.isArray(evaluation.weaknesses)
+                ? evaluation.weaknesses.join("\\n")
+                : evaluation.weaknesses || null,
+              evaluation.studentAnswer || null,
+            ]
+          );
+
+          console.log(`Evaluation saved to MySQL for teacher ${teacherId}`);
+        } catch (dbError) {
+          // Do not fail the AI evaluation just because database storage failed.
+          console.error("Failed to save evaluation to MySQL:", dbError);
+        }
+      }
+
       return res.json({ success: true, evaluation, source: "gemini-3.5-flash-lite" });
     } catch (err: any) {
       console.error("Evaluation server error:", err);
       return res.status(500).json({ error: "Failed to evaluate the handwritten answer", details: err?.message || String(err) });
+    }
+  });
+
+  // Get evaluations for a specific teacher
+  app.get("/api/evaluations", async (req, res) => {
+    try {
+      const teacherId = Number(req.query.teacherId);
+
+      if (!teacherId) {
+        return res.status(400).json({
+          success: false,
+          error: "teacherId is required"
+        });
+      }
+
+      const [rows] = await pool.execute(
+        `SELECT
+          id,
+          question,
+          max_marks,
+          score,
+          percentage,
+          confidence,
+          summary_feedback,
+          created_at
+        FROM evaluations
+        WHERE teacher_id = ?
+        ORDER BY created_at DESC`,
+        [teacherId]
+      );
+
+      const [statsRows] = await pool.execute(
+        `SELECT
+          COUNT(*) AS totalEvaluations,
+          COALESCE(AVG(percentage), 0) AS averagePercentage,
+          SUM(CASE WHEN score IS NOT NULL THEN 1 ELSE 0 END) AS evaluated
+        FROM evaluations
+        WHERE teacher_id = ?`,
+        [teacherId]
+      );
+
+      const stats = (statsRows as any[])[0];
+
+      return res.json({
+        success: true,
+        stats: {
+          totalEvaluations: Number(stats.totalEvaluations) || 0,
+          evaluated: Number(stats.evaluated) || 0,
+          pending: 0,
+          averagePercentage: Number(stats.averagePercentage) || 0
+        },
+        evaluations: rows
+      });
+    } catch (error) {
+      console.error("Failed to fetch evaluations:", error);
+
+      return res.status(500).json({
+        success: false,
+        error: "Failed to fetch evaluations"
+      });
     }
   });
 

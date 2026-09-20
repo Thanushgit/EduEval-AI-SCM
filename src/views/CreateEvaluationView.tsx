@@ -47,7 +47,11 @@ type Evaluation = {
 
 const API_URL = "/api/evaluate";
 
-export const CreateEvaluationView: React.FC = () => {
+interface CreateEvaluationViewProps {
+  teacherId?: number | null;
+}
+
+export const CreateEvaluationView: React.FC<CreateEvaluationViewProps> = ({ teacherId }) => {
   const [step, setStep] = useState<FlowStep>("step1");
 
   const [question, setQuestion] = useState(
@@ -158,6 +162,10 @@ export const CreateEvaluationView: React.FC = () => {
     );
     formData.append("maxMarks", maxMarks);
     formData.append("image", file);
+
+    if (teacherId) {
+      formData.append("teacherId", String(teacherId));
+    }
 
     try {
       setProcessingStage(2);
