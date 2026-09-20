@@ -113,3 +113,28 @@ https://github.com/Thanushgit/EduEval-AI-SCM.git
 3. Create a `.env` file with your `GEMINI_API_KEY`
 4. Run `npm run dev`
 5. The app runs on `http://localhost:3000`
+
+## API Testing Examples
+
+### Health Check
+GET /api/health
+
+### Login
+POST /api/auth/login
+
+Example request:
+{
+  "email": "teacher@test.com",
+  "password": "Test1234"
+}
+
+### Signup
+POST /api/auth/signup
+
+Example request:
+{
+  "name": "New Teacher",
+  "email": "newteacher@test.com",
+  "password": "Test1234",
+  "role": "teacher"
+}
