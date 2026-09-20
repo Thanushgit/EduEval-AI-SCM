@@ -588,6 +588,61 @@ app.get("/api/db-health", async (_req, res) => {
   }
 });
 
+// Get a single evaluation by ID
+app.get("/api/evaluations/:id", async (req, res) => {
+  try {
+    const evaluationId = Number(req.params.id);
+
+    if (!evaluationId) {
+      return res.status(400).json({
+        success: false,
+        error: "Valid evaluation ID is required"
+      });
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT
+        id,
+        teacher_id,
+        question,
+        rubric,
+        max_marks,
+        score,
+        percentage,
+        confidence,
+        summary_feedback,
+        strengths,
+        weaknesses,
+        student_answer,
+        created_at
+      FROM evaluations
+      WHERE id = ?`,
+      [evaluationId]
+    );
+
+    const evaluations = rows as any[];
+
+    if (evaluations.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "Evaluation not found"
+      });
+    }
+
+    return res.json({
+      success: true,
+      evaluation: evaluations[0]
+    });
+  } catch (error) {
+    console.error("Failed to fetch evaluation:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to fetch evaluation"
+    });
+  }
+});
+
 // Get evaluations for a specific teacher
   app.get("/api/evaluations", async (req, res) => {
     try {
