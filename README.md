@@ -176,3 +176,7 @@ Tested REST APIs using curl:
 - DELETE /api/evaluations/:id
 
 All tested APIs returned valid JSON responses during local development.
+
+## Database Design
+
+MySQL is used to store users and evaluation records. The users table manages teacher and student accounts, while the evaluations table stores questions, marks, percentages, feedback, and teacher ownership.
