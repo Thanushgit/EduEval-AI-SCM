@@ -843,8 +843,15 @@ app.get("/api/evaluations/:id", async (req, res) => {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`EduEval AI Server running on http://0.0.0.0:${PORT}`);
+  });
+
+  process.on("SIGINT", async () => {
+    console.log("Shutting down server...");
+    server.close();
+    await pool.end();
+    process.exit(0);
   });
 }
 
