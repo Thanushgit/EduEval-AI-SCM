@@ -1,20 +1,115 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# EduEval AI
 
-# Run and deploy your AI Studio app
+EduEval AI is an AI-powered answer evaluation system that helps teachers evaluate student answers using Artificial Intelligence. The teacher provides a question, marking criteria/rubric, maximum marks, and the student's answer. Google Gemini AI analyses the answer and generates marks, percentage, confidence, feedback, strengths, and weaknesses.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/f34423a6-588e-41f5-8737-795b04b70d96
+- Teacher and student login/signup
+- Role-based access
+- AI-based answer evaluation
+- Handwritten answer image upload
+- Evaluation based on question and rubric
+- Automatic score and percentage
+- Feedback, strengths, and weaknesses
+- MySQL database for users and evaluations
+- REST APIs
 
-## Run Locally
+## Tech Stack
 
-**Prerequisites:**  Node.js
+**Frontend:** React, TypeScript, Vite, HTML, CSS
 
+**Backend:** Node.js, Express.js, TypeScript, REST APIs
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+**Database:** MySQL 8
+
+**AI:** Google Gemini API
+
+**Source Code Management:** Git and GitHub
+
+## Project Structure
+
+```
+EduEval-AI-FIXED/
+|-- src/
+|   |-- components/
+|   |-- views/
+|   `-- App.tsx
+|-- server.ts
+|-- db.ts
+|-- package.json
+|-- package-lock.json
+|-- .gitignore
+|-- .env.example
+`-- README.md
+```
+
+## Database
+
+Database name: `edueval`
+
+### users table
+
+- id
+- name
+- email
+- password
+- role
+- created_at
+
+### evaluations table
+
+- id
+- teacher_id
+- question
+- rubric
+- max_marks
+- score
+- percentage
+- confidence
+- summary_feedback
+- strengths
+- weaknesses
+- student_answer
+- created_at
+
+## REST APIs
+
+- GET /api/health
+- POST /api/auth/signup
+- POST /api/auth/login
+- POST /api/evaluate
+- GET /api/evaluations
+- POST /api/generate-practice
+
+## Team
+
+**K Thanush**
+- Backend development
+- MySQL database
+- REST APIs
+- Authentication backend
+- Evaluation data storage
+- Backend testing and debugging
+
+**Vishnupriya N R**
+- Frontend development
+- UI design
+- React components
+- User interface and interaction
+- Frontend testing
+
+## Version Control
+
+This project uses Git and GitHub for source code management and team collaboration. As part of the SCM project requirements, all changes are tracked through meaningful, descriptive commits.
+
+## GitHub Repository
+
+https://github.com/Thanushgit/EduEval-AI-SCM.git
+
+## Local Setup
+
+1. Clone the repository
+2. Run `npm install`
+3. Create a `.env` file with your `GEMINI_API_KEY`
+4. Run `npm run dev`
+5. The app runs on `http://localhost:3000`
