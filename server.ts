@@ -594,7 +594,7 @@ app.delete("/api/evaluations/:id", async (req, res) => {
   try {
     const evaluationId = Number(req.params.id);
 
-    if (!evaluationId) {
+    if (!Number.isInteger(evaluationId) || evaluationId <= 0) {
       return res.status(400).json({
         success: false,
         error: "Valid evaluation ID is required"
