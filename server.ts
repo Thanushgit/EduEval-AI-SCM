@@ -588,6 +588,46 @@ app.get("/api/db-health", async (_req, res) => {
   }
 });
 
+// Delete an evaluation
+app.delete("/api/evaluations/:id", async (req, res) => {
+  try {
+    const evaluationId = Number(req.params.id);
+
+    if (!evaluationId) {
+      return res.status(400).json({
+        success: false,
+        error: "Valid evaluation ID is required"
+      });
+    }
+
+    const [result] = await pool.execute(
+      "DELETE FROM evaluations WHERE id = ?",
+      [evaluationId]
+    );
+
+    const deleteResult = result as any;
+
+    if (deleteResult.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "Evaluation not found"
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Evaluation deleted successfully"
+    });
+  } catch (error) {
+    console.error("Failed to delete evaluation:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to delete evaluation"
+    });
+  }
+});
+
 // Get a single evaluation by ID
 app.get("/api/evaluations/:id", async (req, res) => {
   try {
