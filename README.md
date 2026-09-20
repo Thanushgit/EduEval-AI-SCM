@@ -188,3 +188,7 @@ The backend provides signup and login REST APIs. Passwords are stored using bcry
 ## Backend Architecture
 
 The Express backend handles authentication, AI evaluation requests, MySQL database operations, and REST API responses. Gemini is used for answer evaluation and MySQL is used for persistent storage.
+
+## Development Testing Workflow
+
+Backend features are tested locally before pushing changes to GitHub. REST APIs are verified using curl and database results are checked directly in MySQL.
