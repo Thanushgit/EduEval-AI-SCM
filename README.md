@@ -138,3 +138,18 @@ Example request:
   "password": "Test1234",
   "role": "teacher"
 }
+
+## Database Setup
+
+Create the MySQL database before starting the application:
+
+CREATE DATABASE edueval;
+
+USE edueval;
+
+The project uses two main tables:
+
+- users - stores teacher and student accounts
+- evaluations - stores answer evaluation results
+
+The MySQL connection is configured in db.ts.
