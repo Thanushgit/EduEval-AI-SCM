@@ -162,3 +162,17 @@ The MySQL connection is configured in db.ts.
 4. Stage the required files.
 5. Create a meaningful commit.
 6. Push the changes to GitHub.
+
+## Backend API Testing
+
+Tested REST APIs using curl:
+- GET /api/health
+- GET /api/db-health
+- POST /api/auth/signup
+- POST /api/auth/login
+- POST /api/evaluate
+- GET /api/evaluations
+- GET /api/evaluations/:id
+- DELETE /api/evaluations/:id
+
+All tested APIs returned valid JSON responses during local development.
