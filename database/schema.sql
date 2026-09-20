@@ -28,3 +28,5 @@ CREATE TABLE IF NOT EXISTS evaluations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
+CREATE INDEX idx_evaluations_teacher_id ON evaluations(teacher_id);
+CREATE INDEX idx_evaluations_created_at ON evaluations(created_at);
