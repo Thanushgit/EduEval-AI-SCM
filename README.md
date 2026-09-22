@@ -24,7 +24,14 @@ User passwords are hashed before being stored in the MySQL database using bcrypt
 **Frontend:** React, TypeScript, Vite, HTML, CSS
 
 **Backend:** Node.js, Express.js, TypeScript, REST APIs
+## User Roles
 
+EduEval AI supports two user roles:
+
+- Teacher
+- Student
+
+Each role has its own dashboard and features.
 **Database:** MySQL 8
 
 **AI:** Google Gemini API
