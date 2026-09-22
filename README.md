@@ -5,6 +5,10 @@ EduEval AI is an AI-powered answer evaluation system that helps teachers evaluat
 
 The project is managed using Git and GitHub for version control and team collaboration.
 
+## Development Server
+
+The application runs locally on port 3000 during development.
+
 ## Local Setup
 
 The project can be run locally using Node.js and the required environment variables.
