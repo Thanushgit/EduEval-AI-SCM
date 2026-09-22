@@ -275,3 +275,6 @@ The evaluation API processes student answers and returns AI-based evaluation res
 - Express.js backend
 - REST API support
 - MySQL database connectivity
+## Database Technology
+
+The project uses MySQL 8.4 for storing users and evaluation records.
