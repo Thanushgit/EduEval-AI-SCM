@@ -9,6 +9,11 @@ The project is managed using Git and GitHub for version control and team collabo
 
 The project can be run locally using Node.js and the required environment variables.
 
+## Contribution Guidelines
+
+Team members contribute through separate Git commits and push their changes to the shared GitHub repository.
+
+
 ## Evaluation Results
 
 The system stores evaluation scores, percentages, confidence scores and feedback for each completed evaluation.
