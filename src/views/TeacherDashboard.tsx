@@ -37,6 +37,17 @@ interface TeacherDashboardProps {
   userId?: number | null;
 }
 
+interface Evaluation {
+  id: number;
+  question: string;
+  max_marks: string | number;
+  score: string | number | null;
+  percentage: string | number | null;
+  confidence: string | number | null;
+  summary_feedback: string | null;
+  created_at: string;
+}
+
 // Mock Data for Charts
 const performanceData = [
   { name: "Week 1", score: 65 },
@@ -83,6 +94,10 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
 
   const [loadingStats, setLoadingStats] = useState(true);
 
+  // Recent evaluations from backend
+  const [recentEvaluations, setRecentEvaluations] = useState<Evaluation[]>([]);
+  const [loadingEvaluations, setLoadingEvaluations] = useState(true);
+
   // Fetch teacher statistics from backend
   useEffect(() => {
     const fetchStats = async () => {
@@ -109,6 +124,34 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
     };
 
     fetchStats();
+  }, [userId]);
+
+  // Fetch recent evaluations from backend
+  useEffect(() => {
+    const fetchRecentEvaluations = async () => {
+      if (!userId) {
+        setLoadingEvaluations(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `/api/evaluations?teacherId=${userId}`
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+          setRecentEvaluations(data.evaluations || []);
+        }
+      } catch (error) {
+        console.error("Failed to load recent evaluations:", error);
+      } finally {
+        setLoadingEvaluations(false);
+      }
+    };
+
+    fetchRecentEvaluations();
   }, [userId]);
 
   const getGreeting = () => {
@@ -223,6 +266,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
             </div>
           </div>
 
+          {/* Recent Evaluations */}
           <div className="bg-white rounded-2xl border border-[#dce9f8] shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-[#e0ecfb] bg-[#f8fbff]">
               <h3 className="font-bold text-lg text-[#0b192c]">
@@ -242,45 +286,74 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
-                  <tr className="hover:bg-slate-50 transition-colors cursor-pointer">
-                    <td className="px-6 py-4 font-medium text-slate-800">
-                      Rahul M.
-                    </td>
+                  {loadingEvaluations ? (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="px-6 py-8 text-center text-slate-500"
+                      >
+                        Loading evaluations...
+                      </td>
+                    </tr>
+                  ) : recentEvaluations.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="px-6 py-8 text-center text-slate-500"
+                      >
+                        No evaluations yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    recentEvaluations.slice(0, 5).map((evaluation) => {
+                      const score = Number(evaluation.score ?? 0);
+                      const maxMarks = Number(evaluation.max_marks ?? 0);
+                      const percentage = Number(
+                        evaluation.percentage ?? 0
+                      );
 
-                    <td className="px-6 py-4">
-                      Physics - Newton's Laws
-                    </td>
+                      const createdDate = new Date(
+                        evaluation.created_at
+                      ).toLocaleDateString();
 
-                    <td className="px-6 py-4 font-bold text-[#0284c7]">
-                      4 / 5
-                    </td>
+                      return (
+                        <tr
+                          key={evaluation.id}
+                          className="hover:bg-slate-50 transition-colors cursor-pointer"
+                        >
+                          <td className="px-6 py-4 font-medium text-slate-800">
+                            Student
+                          </td>
 
-                    <td className="px-6 py-4">
-                      <span className="px-2.5 py-1 text-[10px] font-bold uppercase rounded bg-emerald-100 text-emerald-800">
-                        Reviewed
-                      </span>
-                    </td>
-                  </tr>
+                          <td className="px-6 py-4 max-w-md">
+                            <div
+                              className="truncate"
+                              title={evaluation.question}
+                            >
+                              {evaluation.question}
+                            </div>
 
-                  <tr className="hover:bg-slate-50 transition-colors cursor-pointer">
-                    <td className="px-6 py-4 font-medium text-slate-800">
-                      Sarah J.
-                    </td>
+                            <div className="text-xs text-slate-400 mt-1">
+                              {createdDate}
+                            </div>
+                          </td>
 
-                    <td className="px-6 py-4">
-                      Math - Quadratics
-                    </td>
+                          <td className="px-6 py-4 font-bold text-[#0284c7]">
+                            {score} / {maxMarks}
+                            <div className="text-xs text-slate-500 font-medium">
+                              {Math.round(percentage)}%
+                            </div>
+                          </td>
 
-                    <td className="px-6 py-4 font-bold text-[#0284c7]">
-                      8.5 / 10
-                    </td>
-
-                    <td className="px-6 py-4">
-                      <span className="px-2.5 py-1 text-[10px] font-bold uppercase rounded bg-amber-100 text-amber-800">
-                        Pending Review
-                      </span>
-                    </td>
-                  </tr>
+                          <td className="px-6 py-4">
+                            <span className="px-2.5 py-1 text-[10px] font-bold uppercase rounded bg-emerald-100 text-emerald-800">
+                              Reviewed
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
