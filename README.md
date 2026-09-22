@@ -20,6 +20,12 @@ The project can be run locally using Node.js and the required environment variab
 - Feedback, strengths, and weaknesses
 - MySQL database for users and evaluations
 - REST APIs
+
+## API Architecture
+
+The Express backend provides REST APIs for authentication, evaluation processing, dashboard data and database operations.
+
+
 ## AI Integration
 
 Google Gemini is used to analyze student answers and generate evaluation results and feedback.
