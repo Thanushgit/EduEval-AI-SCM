@@ -272,3 +272,6 @@ The evaluation API processes student answers and returns AI-based evaluation res
 - Teacher dashboard
 - Student dashboard
 - User interface improvements
+- Express.js backend
+- REST API support
+- MySQL database connectivity
