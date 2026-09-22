@@ -192,3 +192,29 @@ The Express backend handles authentication, AI evaluation requests, MySQL databa
 ## Development Testing Workflow
 
 Backend features are tested locally before pushing changes to GitHub. REST APIs are verified using curl and database results are checked directly in MySQL.
+## Frontend Contribution
+
+The frontend provides separate interfaces for teachers and students.
+
+### Teacher Features
+- Teacher dashboard
+- Dashboard statistics
+- Recent evaluation display
+- Evaluation creation interface
+- Student directory
+- Analytics and performance views
+- AI evaluation workflow
+
+### Student Features
+- Student dashboard
+- Evaluation results
+- Performance information
+- Learning insights
+
+### Frontend Technologies
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Lucide React
+- Recharts
