@@ -292,7 +292,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
                         colSpan={4}
                         className="px-6 py-8 text-center text-slate-500"
                       >
-                        Loading evaluations...
+                        Loading recent  evaluations...
                       </td>
                     </tr>
                   ) : recentEvaluations.length === 0 ? (
