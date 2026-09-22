@@ -233,3 +233,13 @@ The application provides authentication APIs for teachers and students.
 - `POST /api/auth/login` - Authenticate an existing user
 - Supports teacher and student roles
 - Passwords are securely hashed before storage
+## Database
+
+EduEval AI uses MySQL for storing application data.
+
+The database stores:
+- User accounts
+- Teacher and student roles
+- Evaluation records
+- Scores and feedback
+- Evaluation timestamps
