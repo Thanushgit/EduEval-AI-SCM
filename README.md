@@ -225,3 +225,11 @@ The backend provides a health check endpoint to verify that the EduEval AI serve
 Endpoint:
 `GET /api/health`
 
+## Authentication APIs
+
+The application provides authentication APIs for teachers and students.
+
+- `POST /api/auth/signup` - Create a new user account
+- `POST /api/auth/login` - Authenticate an existing user
+- Supports teacher and student roles
+- Passwords are securely hashed before storage
