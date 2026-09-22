@@ -16,7 +16,9 @@ EduEval AI is an AI-powered answer evaluation system that helps teachers evaluat
 ## AI Integration
 
 Google Gemini is used to analyze student answers and generate evaluation results and feedback.
+## Authentication Security
 
+User passwords are hashed before being stored in the MySQL database using bcrypt.
 ## Tech Stack
 
 **Frontend:** React, TypeScript, Vite, HTML, CSS
