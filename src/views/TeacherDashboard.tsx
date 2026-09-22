@@ -280,7 +280,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
                   <tr>
                     <th className="px-6 py-3">Student</th>
                     <th className="px-6 py-3">Subject / Topic</th>
-                    <th className="px-6 py-3">Score</th>
+                    <th className="px-6 py-3">Score / Max </th>
                     <th className="px-6 py-3">Status</th>
                   </tr>
                 </thead>
