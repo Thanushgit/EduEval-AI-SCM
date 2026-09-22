@@ -259,3 +259,16 @@ The evaluation API processes student answers and returns AI-based evaluation res
 4. Evaluation results are generated.
 5. Evaluation data is stored in MySQL.
 6. Teacher can view previous evaluations from the dashboard.
+## Team Contributions
+
+### K Thanush
+- Backend development
+- MySQL database integration
+- REST API development
+- Authentication and evaluation APIs
+
+### Vishnupriya N R
+- Frontend development
+- Teacher dashboard
+- Student dashboard
+- User interface improvements
