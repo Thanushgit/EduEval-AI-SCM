@@ -301,7 +301,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
                         colSpan={4}
                         className="px-6 py-8 text-center text-slate-500"
                       >
-                        No evaluations yet.
+                        No recent evaluations found.
                       </td>
                     </tr>
                   ) : (
