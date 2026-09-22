@@ -33,7 +33,9 @@ EduEval AI supports two user roles:
 
 Each role has its own dashboard and features.
 **Database:** MySQL 8
+## Evaluation Storage
 
+Evaluation results are stored in MySQL so teachers can access previous evaluations from the dashboard.
 **AI:** Google Gemini API
 
 **Source Code Management:** Git and GitHub
