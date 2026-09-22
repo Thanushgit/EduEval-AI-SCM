@@ -243,3 +243,11 @@ The database stores:
 - Evaluation records
 - Scores and feedback
 - Evaluation timestamps
+## Evaluation API
+
+The evaluation API processes student answers and returns AI-based evaluation results.
+
+- `POST /api/evaluate` - Evaluate a student answer
+- `GET /api/evaluations` - Fetch teacher evaluations
+- `GET /api/evaluations/:id` - Fetch a specific evaluation
+- `DELETE /api/evaluations/:id` - Delete an evaluation
