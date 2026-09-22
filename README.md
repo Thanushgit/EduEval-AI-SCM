@@ -9,6 +9,10 @@ The project is managed using Git and GitHub for version control and team collabo
 
 The project can be run locally using Node.js and the required environment variables.
 
+## Evaluation Results
+
+The system stores evaluation scores, percentages, confidence scores and feedback for each completed evaluation.
+
 ## Features
 
 - Teacher and student login/signup
