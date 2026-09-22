@@ -218,3 +218,10 @@ The frontend provides separate interfaces for teachers and students.
 - Tailwind CSS
 - Lucide React
 - Recharts
+## API Health Check
+
+The backend provides a health check endpoint to verify that the EduEval AI server is running correctly.
+
+Endpoint:
+`GET /api/health`
+
