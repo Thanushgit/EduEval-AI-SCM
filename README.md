@@ -1,7 +1,9 @@
 # EduEval AI
 
 EduEval AI is an AI-powered answer evaluation system that helps teachers evaluate student answers using Artificial Intelligence. The teacher provides a question, marking criteria/rubric, maximum marks, and the student's answer. Google Gemini AI analyses the answer and generates marks, percentage, confidence, feedback, strengths, and weaknesses.
+## Git Workflow
 
+The project is managed using Git and GitHub for version control and team collaboration.
 ## Features
 
 - Teacher and student login/signup
@@ -56,7 +58,9 @@ EduEval-AI-FIXED/
 |-- .env.example
 `-- README.md
 ```
+## Frontend Technology
 
+The frontend is built using React, TypeScript and Vite.
 ## Database
 
 Database name: `edueval`
