@@ -278,3 +278,6 @@ The evaluation API processes student answers and returns AI-based evaluation res
 ## Database Technology
 
 The project uses MySQL 8.4 for storing users and evaluation records.
+## Backend Technology
+
+The backend is developed using Node.js, Express.js and TypeScript.
