@@ -251,3 +251,11 @@ The evaluation API processes student answers and returns AI-based evaluation res
 - `GET /api/evaluations` - Fetch teacher evaluations
 - `GET /api/evaluations/:id` - Fetch a specific evaluation
 - `DELETE /api/evaluations/:id` - Delete an evaluation
+## Project Workflow
+
+1. Teacher logs into the application.
+2. Teacher creates an evaluation.
+3. Student answer is processed by the AI system.
+4. Evaluation results are generated.
+5. Evaluation data is stored in MySQL.
+6. Teacher can view previous evaluations from the dashboard.
