@@ -13,6 +13,9 @@ EduEval AI is an AI-powered answer evaluation system that helps teachers evaluat
 - Feedback, strengths, and weaknesses
 - MySQL database for users and evaluations
 - REST APIs
+## AI Integration
+
+Google Gemini is used to analyze student answers and generate evaluation results and feedback.
 
 ## Tech Stack
 
